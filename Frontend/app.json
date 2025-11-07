@@ -1,0 +1,50 @@
+{
+  "expo": {
+    "name": "Dhanno",
+    "slug": "Dhanno",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./image/carlogo.png",
+    "scheme": "RIDE_app",
+    "userInterfaceStyle": "automatic",
+    "newArchEnabled": true,
+    "ios": {
+      "supportsTablet": true
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./image/carlogo.png",
+        "backgroundImage": "./image/carlogo.png"
+      },
+      "edgeToEdgeEnabled": true,
+      "package": "com.anonymous.RIDEAPP"
+    },
+    "web": {
+      "bundler": "metro",
+      "output": "static",
+      "favicon": "./image/carlogo.png"
+    },
+    "plugins": [
+      "expo-router",
+      [
+        "expo-splash-screen",
+        {
+          "image": "./image/carlogo.png",
+          "imageWidth": 250,
+          "resizeMode": "contain",
+          "backgroundColor": "#1E1E1E"
+        }
+      ],
+      "expo-web-browser"
+    ],
+    "experiments": {
+      "typedRoutes": true
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "ca356e3c-3a2b-46c6-aa61-3e7066c51a24"
+      }
+    }
+  }
+}
