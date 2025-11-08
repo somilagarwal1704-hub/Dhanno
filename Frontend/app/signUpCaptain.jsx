@@ -2,6 +2,11 @@ import { Link, router } from "expo-router";
 import { useState } from "react";
 import { View,Text, TextInput,StyleSheet, TouchableOpacity } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import axios from "axios";
+import {BASE_URL} from "@env";
+import { UserDataContext } from "../context/userContext";
+import { useContext } from "react";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 
 export default function SignUpUser(){
@@ -10,19 +15,46 @@ const [showPassword,setShowPassword]=useState(false);
 const [firstName,setFirstName]=useState("");
 const [lastName,setLastName]=useState("");
 const [email,setEmail]=useState("");
-const [captainData,setCaptainData]=useState({});
 
-function handleCreate(){
-router.replace("/")
-setCaptainData({
+
+
+const {user,setUser}=useContext(UserDataContext);
+
+async function handleCreate(){
+     console.log("create")
+     if(!firstName?.trim() || !email?.trim()  || !password?.trim()){
+          return;
+     }
+const newCaptain={
      fullname:{
           firstname:firstName,
           lastname:lastName,
      },
      email:email,
      password:password
-})
 }
+console.log(newUser)
+try {
+  const response = await axios.post(`${BASE_URL}/captains/register`, newCaptain);
+  console.log("Response:", response.data);
+
+  if (response.status === 201) {
+      const data = response.data;
+      await AsyncStorage.setItem("user", JSON.stringify(response.data.user));
+      setUser(data.user);
+      router.push("/");
+    }
+
+    setEmail("");
+    setFirstName("");
+    setLastName("");
+    setPassword("");
+} catch (err) {
+  console.log("Error Response:", err.response?.data || err.message);
+}
+}
+
+
      return(
           <View style={{
                paddingTop:40,
@@ -35,7 +67,7 @@ setCaptainData({
                <Text style={styles.logo}>Dhanno</Text>
              </View>
              <View style={styles.View}>
-               <Text style={styles.text}>What's Our Captain Name</Text>
+               <Text style={styles.text}>What's Your Name</Text>
                <View style={{
                     flexDirection:"row",
                     gap:10,
@@ -50,7 +82,7 @@ setCaptainData({
                </View>
              </View>
              <View style={styles.View}>
-               <Text style={styles.text}>What's Our Captain Email</Text>
+               <Text style={styles.text}>Enter Your Email</Text>
                <View style={{
                     marginTop:10,
                }}>
@@ -72,7 +104,7 @@ setCaptainData({
                     <TouchableOpacity onPress={() => setShowPassword(!showPassword)} style={{
                          position:"absolute",
                          right:8,
-                         top:8
+                         top:14
                     }}>
           <Ionicons
             name={showPassword ? "eye" : "eye-off"} // 👁️ toggle icon
@@ -84,7 +116,7 @@ setCaptainData({
              </View>
                
              <View style={styles.View}>
-             <TouchableOpacity onPress={handleCreate}  style={{ backgroundColor:"rgba(7, 12, 7, 1)",
+             <TouchableOpacity onPress={handleCreate} style={{ backgroundColor:"rgba(7, 12, 7, 1)",
                                       height:55,
                                       borderRadius:8,
                                       justifyContent:"center",
@@ -113,7 +145,7 @@ setCaptainData({
                          fontWeight:"400",
                     }}>Login here</Link>
                     </View>
-                     <View style={{
+                    <View style={{
                         position:"absolute",
                         bottom:40,
                         left:20
@@ -130,8 +162,9 @@ setCaptainData({
 }
 const styles=StyleSheet.create({
      logo:{
-          fontSize:28,
-          fontWeight:"800"
+          fontSize:30,
+          fontWeight:"800",
+          marginBottom:10,
      },
      View:{
           marginTop:20,
@@ -143,7 +176,7 @@ const styles=StyleSheet.create({
      },
      input1:{
                               color:"black",
-                              backgroundColor:"rgba(163, 166, 168, 0.2)",
+                              backgroundColor:"rgba(129, 132, 135, 0.2)",
                               borderRadius:5,
                               height:55,
                               width:"50%",
@@ -151,10 +184,10 @@ const styles=StyleSheet.create({
      },
      input2:{
                               color:"black",
-                              backgroundColor:"rgba(163, 166, 168, 0.2)",
+                              backgroundColor:"rgba(129, 132, 135, 0.2)",
                               borderRadius:8,
                               height:55,
                               width:"100%",
                               paddingHorizontal:20,
-     },
+     }
 })
